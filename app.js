@@ -49,10 +49,10 @@ app.use(
       createEvent: (args) => {
         const event = {
           _id: Math.random().toString(),
-          title: args.title,
-          description: args.description,
-          price: +args.price,
-          date: new Date().toISOString(),
+          title: args.eventInput.title,
+          description: args.eventInput.description,
+          price: +args.eventInput.price,
+          date: args.eventInput.date,
         };
 
         return event;
