@@ -20,6 +20,7 @@ const events = async (eventIds) => {
     return events.map((event) => {
       return {
         ...event._doc,
+        date: new Date(event._doc.date).toISOString(),
         creator: user.bind(this, event.creator),
       };
     });
@@ -35,23 +36,15 @@ module.exports = {
       return events.map((event) => {
         return {
           ...event._doc,
+          date: new Date(event._doc.date).toISOString(),
           creator: user.bind(this, event._doc.creator),
         };
       });
     } catch (error) {
       throw new Error("failed to fetch events", error);
     }
-
-    // return Event.find()
-    //   .then((events) => {
-    //     return events.map((event) => {
-    //       return { ...event._doc };
-    //     });
-    //   })
-    //   .catch((error) => {
-    //     console.log("failed to fetch events", events);
-    //   });
   },
+
   createEvent: async (args) => {
     const mockedUser = "60322358f800af693edd11de";
     const { title, description, price, date } = args.eventInput;
@@ -60,7 +53,7 @@ module.exports = {
         title,
         description,
         price: +price,
-        date,
+        date: new Date(event._doc.date).toISOString(),
         creator: mockedUser,
       });
       const savedEvent = await event.save();
@@ -74,35 +67,8 @@ module.exports = {
     } catch (error) {
       throw new Error("create event failed", error);
     }
-    // const event = new Event({
-    //   title: args.eventInput.title,
-    //   description: args.eventInput.description,
-    //   price: +args.eventInput.price,
-    //   date: new Date(args.eventInput.date),
-    //   creator: "60321a9112380a637229707e",
-    // });
-    // let createdEvent;
-    // return event
-    //   .save()
-    //   .then((result) => {
-    //     createdEvent = { ...result._doc };
-    //     return User.findById("60321a9112380a637229707e")
-    //       .then((user) => {
-    //         if (!user) {
-    //           throw new Error("Creating user not found");
-    //         }
-    //         user.createdEvents.push(event);
-    //         return user.save();
-    //       })
-    //       .then((result) => {
-    //         return createdEvent;
-    //       });
-    //   })
-    //   .catch((error) => {
-    //     console.log("event save error", error);
-    //     throw error;
-    //   });
   },
+
   createUser: async (args) => {
     const { email, password } = args.userInput;
     try {
@@ -120,28 +86,5 @@ module.exports = {
     } catch (error) {
       throw new Error("create user failed", error);
     }
-    // return User.findOne({ email: args.userInput.email })
-    //   .then((user) => {
-    //     if (user) {
-    //       throw new Error("User exists already");
-    //     }
-    //     return bcrypt.hash(args.userInput.password, 12);
-    //   })
-    //   .then((hashedPassword) => {
-    //     const user = new User({
-    //       email: args.userInput.email,
-    //       password: hashedPassword,
-    //     });
-
-    //     return user
-    //       .save()
-    //       .then((result) => {
-    //         return { ...result._doc };
-    //       })
-    //       .catch((error) => {
-    //         console.log("user save error", error);
-    //         throw error;
-    //       });
-    //   });
   },
 };
