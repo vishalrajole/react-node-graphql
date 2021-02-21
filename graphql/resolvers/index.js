@@ -2,10 +2,42 @@ const Event = require("../../models/event");
 const User = require("../../models/user");
 const bcrypt = require("bcryptjs");
 
+const user = async (userId) => {
+  try {
+    const user = await User.findById(userId);
+    return {
+      ...user._doc,
+      createdEvents: events.bind(this, user._doc.createdEvents),
+    };
+  } catch (error) {
+    throw new Error("User not found with specified ID");
+  }
+};
+
+const events = async (eventIds) => {
+  try {
+    const events = await Event.find({ _id: { $in: eventIds } });
+    return events.map((event) => {
+      return {
+        ...event._doc,
+        creator: user.bind(this, event.creator),
+      };
+    });
+  } catch (error) {
+    throw new Error("Events not found");
+  }
+};
+
 module.exports = {
   events: async () => {
     try {
-      return await Event.find().populate("creator");
+      const events = await Event.find();
+      return events.map((event) => {
+        return {
+          ...event._doc,
+          creator: user.bind(this, event._doc.creator),
+        };
+      });
     } catch (error) {
       throw new Error("failed to fetch events", error);
     }
