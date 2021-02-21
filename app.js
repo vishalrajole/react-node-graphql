@@ -22,12 +22,14 @@ app.use(
         description: String!
         price: Float!
         date: String!
+        creator: User!
     }
 
     type User {
         _id: ID!,
         email: String!
         password: String
+        createdEvents: [Event!]
     }
 
     input EventInput {
@@ -60,16 +62,22 @@ app.use(
 
     //resolvers
     rootValue: {
-      events: () => {
-        return Event.find()
-          .then((events) => {
-            return events.map((event) => {
-              return { ...event._doc };
-            });
-          })
-          .catch((error) => {
-            console.log("failed to fetch events", events);
-          });
+      events: async () => {
+        try {
+          return await Event.find();
+        } catch (error) {
+          throw new Error("failed to fetch events", error);
+        }
+
+        // return Event.find()
+        //   .then((events) => {
+        //     return events.map((event) => {
+        //       return { ...event._doc };
+        //     });
+        //   })
+        //   .catch((error) => {
+        //     console.log("failed to fetch events", events);
+        //   });
       },
       createEvent: async (args) => {
         const mockedUser = "60322358f800af693edd11de";
